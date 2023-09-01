@@ -34,8 +34,8 @@ url: URL of the tweet
 time: Date and time of the tweet in UTC.   
 
 ```{r}
-tweets <- read_csv('end_rainbow_tweets.csv', col_names = c('handle', 'text', 'url', 'time'))
-tweets1 <- read_csv('end_rainbow_tweets_1.csv', col_names = c('handle', 'text', 'url', 'time'))
+tweets <- read_csv('data/end_rainbow_tweets.csv', col_names = c('handle', 'text', 'url', 'time'))
+tweets1 <- read_csv('data/end_rainbow_tweets_1.csv', col_names = c('handle', 'text', 'url', 'time'))
 
 tweets_merged <- rbind(tweets, tweets1)
 

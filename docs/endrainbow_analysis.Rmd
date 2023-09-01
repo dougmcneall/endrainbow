@@ -1,0 +1,131 @@
+---
+title: "#endrainbow tweets analysis"
+author: "Doug McNeall"
+date: "8/31/2023"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+Useful link for text mining  
+
+https://www.r-bloggers.com/2021/03/text-mining-term-frequency-analysis-and-word-cloud-creation-using-the-tm-package/
+
+
+```{r, include=FALSE}
+library(tidyverse)
+library(tm)
+library(wordcloud)
+library(lubridate)
+
+```
+
+
+## Load data
+
+Two spreadsheets, covering 2017 - 2019 and 2019 - 2023 converted to csv from google sheets. Each row is a tweet.
+
+There are four columns: 
+
+handle: User's Twitter handle  
+text: Text of the tweet  
+url: URL of the tweet  
+time: Date and time of the tweet in UTC.   
+
+```{r}
+tweets <- read_csv('end_rainbow_tweets.csv', col_names = c('handle', 'text', 'url', 'time'))
+tweets1 <- read_csv('end_rainbow_tweets_1.csv', col_names = c('handle', 'text', 'url', 'time'))
+
+tweets_merged <- rbind(tweets, tweets1)
+
+```
+
+## How many unique users tweeted?
+
+```{r}
+
+length(unique(tweets_merged$handle))
+
+```
+
+## Top 20 #endrainbow tweeters
+
+```{r}
+
+head(sort(table(tweets_merged$handle), decreasing = TRUE), 20)
+
+```
+Convert the odd time format into something R understands
+
+```{r}
+tweet_time <- mdy_hm(tweets_merged$time)
+```
+
+## A histogram of #endrainbow tweets per month
+
+```{r, fig.width = 10, fig.height = 5}
+par(las = 1)
+tweet_hist <- hist(tweet_time, 
+                   breaks = 'months',
+                   freq = TRUE,
+                   main = "#endrainbow tweets per month",
+                   xlab = '',
+                   col = 'lightblue',
+                   axes = FALSE,
+                   border = 'lightblue'
+)
+Axis(tweet_time, side = 1, col = 'black')
+Axis(side = 2, col = 'black')
+
+
+```
+## Build a wordcloud
+
+```{r}
+
+library(wordcloud)
+
+wcl <- wordcloud(tweets_merged$text, max.words = 50)
+
+```
+
+## Create a corpus and remove stopwords (it, the, and etc.) and punctuation (including handles).
+
+```{r}
+words <- tweets_merged$text
+
+            corpus <- tm::Corpus(tm::VectorSource(words))
+            corpus <- tm::tm_map(corpus, tm::removePunctuation)
+            corpus <- tm::tm_map(corpus, function(x) tm::removeWords(x, 
+                tm::stopwords()))
+
+corpus[[1]]$content
+
+
+```
+## Most common words in the corpus
+
+```{r}
+
+#head(sort(termFreq(tweets_merged$text), decreasing = TRUE), 10)
+
+head(sort(termFreq(corpus$content), decreasing = TRUE), 20)
+
+```
+## More corpus transformations
+
+```{r}
+
+tdm <- TermDocumentMatrix(corpus)
+
+dtm <- DocumentTermMatrix(corpus)
+
+fft <- findFreqTerms(tdm, lowfreq = 100)
+
+fmft <- findMostFreqTerms(dtm,10)
+
+#termFreq()
+
+```
+

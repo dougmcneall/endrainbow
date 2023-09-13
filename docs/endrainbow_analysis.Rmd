@@ -5,6 +5,20 @@ date: "8/31/2023"
 output: html_document
 ---
 
+This project looks at data from the micro-campaign #endrainbow on twitter. The aim of the campaign was to convince climate and earth-system  
+scientists to stop using rainbow-based colour palettes (such as matlab's Jet, or R's Spectral) as defaults in their scientific visualisations.  
+
+The campaign had some success, with big journals like Nature changing their editorial policies on colour palettes, although it's difficult  
+attribute these successes to the #endrainbow campaign.
+
+Other useful data would include:  
+Counts of rainbow figures in journals through time.  
+Count number of journals with policies through time.  
+Reproduce rainbow threshold game.  
+
+
+
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
